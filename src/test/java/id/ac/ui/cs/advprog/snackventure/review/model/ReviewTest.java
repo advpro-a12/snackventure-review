@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import id.ac.ui.cs.advprog.snackventure.review.enums.ReviewStatus;
+import id.ac.ui.cs.advprog.snackventure.review.status.ApprovedState;
+import id.ac.ui.cs.advprog.snackventure.review.status.RejectedState;
 
 
 

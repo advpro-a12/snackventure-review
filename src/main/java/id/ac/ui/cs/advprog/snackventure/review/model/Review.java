@@ -1,6 +1,8 @@
 package id.ac.ui.cs.advprog.snackventure.review.model;
 
 import id.ac.ui.cs.advprog.snackventure.review.enums.ReviewStatus;
+import id.ac.ui.cs.advprog.snackventure.review.status.PendingState;
+import id.ac.ui.cs.advprog.snackventure.review.status.ReviewState;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.Date;
@@ -18,6 +20,7 @@ public class Review {
     private int rating;
     private String subscriptionBoxId;
     private ReviewStatus reviewStatus;
+    private ReviewState state;
 
 
     public Review(String customerId, String subscriptionBoxId, int rating,String review) {
@@ -28,5 +31,17 @@ public class Review {
         this.reviewStatus = ReviewStatus.PENDING;
         this.rating = rating;
         this.review = review;
+        this.state = new PendingState();
     }
+
+    public void approve(){
+        state.approve(this);
+    }
+
+    public void reject(){
+        state.reject(this);
+    }
+
+
+
 }
