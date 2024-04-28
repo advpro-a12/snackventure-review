@@ -1,6 +1,7 @@
 package id.ac.ui.cs.advprog.snackventure.review.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -39,15 +40,33 @@ public class ReviewTest {
     }
     
     @Test
-    public void testSetReviewStatusToApproved() {
-        review.setReviewStatus(ReviewStatus.APPROVED);
+    public void testReviewStatusApprove() {
+        review.approve();
         assertEquals(ReviewStatus.APPROVED, review.getReviewStatus());
+        assertInstanceOf(ApprovedState.class, review.getState());
     }
 
     @Test
-    public void testSetReviewStatusToRejected() {
-        review.setReviewStatus(ReviewStatus.REJECTED);
+    public void testReviewStatusReject() {
+        review.reject();
         assertEquals(ReviewStatus.REJECTED, review.getReviewStatus());
+        assertInstanceOf(RejectedState.class, review.getState());
+    }
+
+    @Test
+    public void testReviewStatusApproveThenReject(){
+        review.approve();
+        review.reject();
+        assertEquals(ReviewStatus.APPROVED, review.getReviewStatus());
+        assertInstanceOf(ApprovedState.class, review.getState());
+    }
+
+    @Test
+    public void testReivewStatusRejectThenApprove(){
+        review.reject();
+        review.approve();
+        assertEquals(ReviewStatus.REJECTED, review.getReviewStatus());
+        assertInstanceOf(RejectedState.class, review.getState());
     }
 
 }   
