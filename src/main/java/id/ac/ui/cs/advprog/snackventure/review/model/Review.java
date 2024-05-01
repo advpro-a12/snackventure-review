@@ -6,14 +6,13 @@ import id.ac.ui.cs.advprog.snackventure.review.status.ReviewState;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.Date;
-import java.util.UUID;
 
 
 @Setter
 @Getter
 
 public class Review {
-    private UUID idReview;
+    private String idReview;
     private Date createdDate;
     private String customerId;
     private String review;
@@ -23,8 +22,8 @@ public class Review {
     private ReviewState state;
 
 
-    public Review(String customerId, String subscriptionBoxId, int rating,String review) {
-        this.idReview = UUID.randomUUID();
+    public Review(String idReview, String customerId, String subscriptionBoxId, int rating,String review) {
+        this.idReview = idReview;
         this.createdDate= new Date();
         this.customerId = customerId;
         this.subscriptionBoxId = subscriptionBoxId;
