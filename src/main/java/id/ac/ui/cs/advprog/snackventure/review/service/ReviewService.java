@@ -14,4 +14,5 @@ public interface ReviewService {
     Review updateReview(Review Review);
     void deleteReview(String ReviewId);
     List<Review> findFilteredReviewByRating(int rating, String subscriptionBoxId);
+    Review updateReviewStatus(String idReview, String status);
 } 
