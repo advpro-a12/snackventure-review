@@ -7,12 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import id.ac.ui.cs.advprog.snackventure.review.enums.ReviewStatus;
 import id.ac.ui.cs.advprog.snackventure.review.model.Review;
 import id.ac.ui.cs.advprog.snackventure.review.repository.ReviewRepository;
 
@@ -99,6 +102,20 @@ public class ReviewServiceTest {
     }
 
     @Test
+    void testFindReviewById(){
+        Review review = new Review();
+        String reviewId = UUID.randomUUID().toString();
+        review.setIdReview(reviewId);
+
+        when(reviewRepository.findById(reviewId)).thenReturn(Optional.of(review));
+
+        Optional<Review> result = reviewService.findReviewById(reviewId);
+    
+        assertTrue(result.isPresent());
+        assertEquals(reviewId, result.get().getIdReview());
+    }
+
+    @Test
     void testEditReview(){
         String customerId1 = "07f9b8b0-7257-4434-a5b9-79c9703f0760";
         String subscriptionBoxId1 = "99963276-4e60-4e9a-96ce-8d5a9957209d";
@@ -153,6 +170,36 @@ public class ReviewServiceTest {
         assertTrue(reviews.size()!=0);
         assertEquals(reviews.size(), 1);
         assertEquals(reviews.get(0).getIdReview(), review.getIdReview());
+    }
+    
+    @Test
+    public void testUpdateReviewStatusToApproved() {
+        Review review = new Review();
+        UUID id = UUID.randomUUID();
+        review.setIdReview(id.toString());
+
+        when(reviewService.findReviewById(id.toString())).thenReturn(Optional.of(review));
+
+        Review updatedReview = reviewService.updateReviewStatus(id.toString(), ReviewStatus.APPROVED.toString());
+
+        verify(reviewRepository, times(1)).findById(id.toString());
+        verify(reviewRepository, times(1)).save(review);
+        assertEquals(ReviewStatus.APPROVED, updatedReview.getReviewStatus());
+    }
+
+    @Test
+    public void testUpdateReviewStatusToRejected() {
+        Review review = new Review();
+        UUID id = UUID.randomUUID();
+        review.setIdReview(id.toString());
+
+        when(reviewService.findReviewById(id.toString())).thenReturn(Optional.of(review));
+
+        Review updatedReview = reviewService.updateReviewStatus(id.toString(), ReviewStatus.REJECTED.toString());
+
+        verify(reviewRepository, times(1)).findById(id.toString());
+        verify(reviewRepository, times(1)).save(review);
+        assertEquals(ReviewStatus.REJECTED, updatedReview.getReviewStatus());
     }
 
 }
