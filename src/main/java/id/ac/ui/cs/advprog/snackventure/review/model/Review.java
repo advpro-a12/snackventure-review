@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.Date;
+import java.util.UUID;
 
 @Setter
 @Getter
@@ -15,6 +16,8 @@ import java.util.Date;
 @Table(name = "review")
 public class Review {
     @Id
+    @Column(name = "id", updatable = false, nullable = false, unique = true)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private String idReview;
 
     @Column(name="created_date", updatable = false, nullable = false)
@@ -38,9 +41,12 @@ public class Review {
     @Transient
     private ReviewState state;
 
+    public Review(){
+        this.state = new PendingState();
+    }
 
-    public Review(String idReview, String userId, String subscriptionBoxId, int rating,String review) {
-        this.idReview = idReview;
+    public Review(String userId, String subscriptionBoxId, int rating,String review) {
+        this.idReview = UUID.randomUUID().toString();
         this.createdDate= new Date();
         this.userId = userId;
         this.subscriptionBoxId = subscriptionBoxId;
@@ -57,7 +63,4 @@ public class Review {
     public void reject(){
         state.reject(this);
     }
-
-
-
 }

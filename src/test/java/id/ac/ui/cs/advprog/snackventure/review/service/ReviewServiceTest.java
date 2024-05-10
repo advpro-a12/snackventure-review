@@ -1,10 +1,19 @@
 package id.ac.ui.cs.advprog.snackventure.review.service;
 
-import id.ac.ui.cs.advprog.snackventure.review.model.Review;
-import id.ac.ui.cs.advprog.snackventure.review.repository.ReviewRepository;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,9 +22,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import id.ac.ui.cs.advprog.snackventure.review.model.Review;
+import id.ac.ui.cs.advprog.snackventure.review.repository.ReviewRepository;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -26,23 +34,21 @@ public class ReviewServiceTest {
     @InjectMocks
     private ReviewServiceImpl reviewService;
 
-    private Review review;
-
     @BeforeEach
     void setUp(){
         MockitoAnnotations.openMocks(this);
-        String idreview = "4ec1f12c-8e2b-4f02-85c0-531e762b483b";
+    }
+
+    @Test
+    void testCreateReview(){
         String customerId1 = "07f9b8b0-7257-4434-a5b9-79c9703f0760";
         String subscriptionBoxId1 = "99963276-4e60-4e9a-96ce-8d5a9957209d";
         int rating1 = 4;
         String reviewText1 = "Great snacks!";
 
-        review = new Review(idreview, customerId1, subscriptionBoxId1, rating1, reviewText1);
-    }
-
-    @Test
-    void testCreateReview(){
-        when(reviewRepository.save(review)).thenReturn(review);
+        Review review = new Review(customerId1, subscriptionBoxId1, rating1, reviewText1);
+        
+        when(reviewRepository.save(any(Review.class))).thenReturn(review);
         Review createReview = reviewService.createReview(review);
         assertNotNull(createReview);
         assertEquals(review.getIdReview(), createReview.getIdReview());
@@ -50,44 +56,80 @@ public class ReviewServiceTest {
 
     @Test
     void testFindAllReviews(){
-        when(reviewRepository.findAll()).thenReturn(Arrays.asList(review));
+        Review review1 = new Review();
+        Review review2 = new Review();
+        Review review3 = new Review();
+        when(reviewRepository.findAll()).thenReturn(Arrays.asList(review1,review2,review3));
+        
         List<Review> reviewList = reviewService.findAllReviews();
         assertTrue(reviewList.size()!=0);
-        assertEquals(reviewList.size(), 1);
-        assertEquals(reviewList.get(0).getIdReview(), review.getIdReview());
+        assertEquals(reviewList.size(), 3);
     }
 
     @Test
     void testFindAllReviewByUserId(){
-        when(reviewRepository.findAllByUserId("07f9b8b0-7257-4434-a5b9-79c9703f0760")).thenReturn(Arrays.asList(review));
+        Review review1 = new Review();
+        review1.setIdReview("07f9b8b0-7257-4434-a5b9-79c9703f0760");
+        Review review2 = new Review();
+        review2.setIdReview("07f9b8b0-7257-4434-a5b9-79c9703f0760");
+        when(reviewRepository.findAllByUserId("07f9b8b0-7257-4434-a5b9-79c9703f0760")).thenReturn(Arrays.asList(review1,review2));
+
         List<Review> reviews = reviewService.findAllByUserId("07f9b8b0-7257-4434-a5b9-79c9703f0760");
         assertTrue(reviews.size()!=0);
-        assertEquals(reviews.size(), 1);
-        assertEquals(reviews.get(0).getIdReview(), review.getIdReview());
+        assertEquals(reviews.size(), 2);
+        assertEquals(reviews.get(0).getIdReview(), review1.getIdReview());
+        assertEquals(reviews.get(1).getIdReview(), review2.getIdReview());
     }
 
     @Test
     void testFindReviewBySubscriptionBoxId(){
-        when(reviewRepository.findAllBySubscriptionBoxId("99963276-4e60-4e9a-96ce-8d5a9957209d")).thenReturn(Arrays.asList(review));
+        Review review1 = new Review();
+        review1.setSubscriptionBoxId("99963276-4e60-4e9a-96ce-8d5a9957209d");
+        Review review2 = new Review();
+        review2.setSubscriptionBoxId("99963276-4e60-4e9a-96ce-8d5a9957209d");
+
+        when(reviewRepository.findAllBySubscriptionBoxId("99963276-4e60-4e9a-96ce-8d5a9957209d"))
+        .thenReturn(Arrays.asList(review1,review2));
+        
         List<Review> reviews = reviewService.findAllBySubscriptionBoxId("99963276-4e60-4e9a-96ce-8d5a9957209d");
         assertTrue(reviews.size()!=0);
-        assertEquals(reviews.size(), 1);
-        assertEquals(reviews.get(0).getIdReview(), review.getIdReview());
+        assertEquals(reviews.size(), 2);
+        assertEquals(reviews.get(0).getSubscriptionBoxId(), review1.getSubscriptionBoxId());
+        assertEquals(reviews.get(1).getSubscriptionBoxId(), review2.getSubscriptionBoxId());
     }
 
     @Test
     void testEditReview(){
+        String customerId1 = "07f9b8b0-7257-4434-a5b9-79c9703f0760";
+        String subscriptionBoxId1 = "99963276-4e60-4e9a-96ce-8d5a9957209d";
+        int rating1 = 4;
+        String reviewText1 = "Great snacks!";
+
+        Review review = new Review(customerId1, subscriptionBoxId1, rating1, reviewText1);
         when(reviewRepository.save(review)).thenReturn(review);
+
+        review.setReview("oke mantap sekali ini");
+        review.setRating(5);
         Review editedReview = reviewService.updateReview(review);
+
         assertNotNull(editedReview);
         assertEquals(review.getIdReview(),editedReview.getIdReview());
+        assertEquals(editedReview.getReview(),"oke mantap sekali ini");
+        assertEquals(editedReview.getRating(), 5);
     }
 
     @Test
     void testDeleteReview(){
-        doNothing().when(reviewRepository).deleteById("4ec1f12c-8e2b-4f02-85c0-531e762b483b");
-        assertDoesNotThrow(() -> reviewService.deleteReview("4ec1f12c-8e2b-4f02-85c0-531e762b483b"));
-        verify(reviewRepository).deleteById("4ec1f12c-8e2b-4f02-85c0-531e762b483b");
+        String userId = "07f9b8b0-7257-4434-a5b9-79c9703f0760";
+        String subscriptionBoxId1 = "99963276-4e60-4e9a-96ce-8d5a9957209d";
+        int rating1 = 4;
+        String reviewText1 = "Great snacks!";
+
+        Review review = new Review(userId, subscriptionBoxId1, rating1, reviewText1);
+
+        doNothing().when(reviewRepository).deleteById(review.getIdReview());
+        assertDoesNotThrow(() -> reviewService.deleteReview(review.getIdReview()));
+        verify(reviewRepository).deleteById(review.getIdReview());
     }
 
     @Test
@@ -99,11 +141,18 @@ public class ReviewServiceTest {
 
     @Test
     void testFilterReviewByRating(){
+        String userId = "07f9b8b0-7257-4434-a5b9-79c9703f0760";
+        String subscriptionBoxId1 = "99963276-4e60-4e9a-96ce-8d5a9957209d";
+        int rating1 = 4;
+        String reviewText1 = "Great snacks!";
+
+        Review review = new Review(userId, subscriptionBoxId1, rating1, reviewText1);
+
         when(reviewRepository.findFilteredReviewByRating(4, "99963276-4e60-4e9a-96ce-8d5a9957209d")).thenReturn(Arrays.asList(review));
         List<Review> reviews = reviewService.findFilteredReviewByRating(4, "99963276-4e60-4e9a-96ce-8d5a9957209d");
         assertTrue(reviews.size()!=0);
         assertEquals(reviews.size(), 1);
         assertEquals(reviews.get(0).getIdReview(), review.getIdReview());
-
     }
+
 }

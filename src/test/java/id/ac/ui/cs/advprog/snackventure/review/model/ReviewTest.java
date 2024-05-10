@@ -18,26 +18,22 @@ public class ReviewTest {
 
     @BeforeEach
     public void setUp() {
-        String idReview = "ulasan1";
         int rating = 4;
         String reviewText = "Great snacks!";
-        String customerId = "07f9b8b0-7257-4434-a5b9-79c9703f0760";
+        String userId = "07f9b8b0-7257-4434-a5b9-79c9703f0760";
         String subscriptionBoxId = "99963276-4e60-4e9a-96ce-8d5a9957209d";
-
-        review = new Review(idReview, customerId, subscriptionBoxId, rating, reviewText);
+        review = new Review(userId, subscriptionBoxId, rating, reviewText);
     }
 
     @Test
     public void testCreateReview() {
         assertNotNull(review);
-        
-        assertEquals("ulasan1",review.getIdReview());
+        assertNotNull(review.getIdReview());
         assertNotNull(review.getCreatedDate());
 
         assertEquals("07f9b8b0-7257-4434-a5b9-79c9703f0760", review.getUserId());
         assertEquals("99963276-4e60-4e9a-96ce-8d5a9957209d", review.getSubscriptionBoxId());
         assertEquals(ReviewStatus.PENDING, review.getReviewStatus());
-
         assertEquals(4, review.getRating());
         assertEquals("Great snacks!", review.getReview());
     }

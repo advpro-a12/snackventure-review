@@ -40,9 +40,9 @@ tasks.withType<Test> {
 }
 
 tasks.test {
-//    useJUnitPlatform()
-//    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
-    enabled = false
+   useJUnitPlatform()
+   finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+   
 }
 tasks.jacocoTestReport {
    classDirectories.setFrom(files(classDirectories.files.map {
