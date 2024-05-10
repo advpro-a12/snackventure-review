@@ -34,7 +34,7 @@ public class ReviewTest {
         assertEquals("ulasan1",review.getIdReview());
         assertNotNull(review.getCreatedDate());
 
-        assertEquals("07f9b8b0-7257-4434-a5b9-79c9703f0760", review.getCustomerId());
+        assertEquals("07f9b8b0-7257-4434-a5b9-79c9703f0760", review.getUserId());
         assertEquals("99963276-4e60-4e9a-96ce-8d5a9957209d", review.getSubscriptionBoxId());
         assertEquals(ReviewStatus.PENDING, review.getReviewStatus());
 

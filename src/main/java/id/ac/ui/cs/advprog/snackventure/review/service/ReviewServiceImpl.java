@@ -1,6 +1,7 @@
 package id.ac.ui.cs.advprog.snackventure.review.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,42 +15,42 @@ public class ReviewServiceImpl implements ReviewService {
     private ReviewRepository reviewRepository;
 
     @Override
-    public Review createReview(Review Review){
-        return reviewRepository.create(Review);
+    public Review createReview(Review review){
+        return reviewRepository.save(review);
     }
 
     @Override
     public List<Review> findAllReviews(){
-        return (List<Review>) reviewRepository.findAll();
+        return reviewRepository.findAll();
     }
 
     @Override
     public List<Review> findAllByUserId(String userId){
-        return (List<Review>) reviewRepository.findAllByUserId(userId);
+        return reviewRepository.findAllByUserId(userId);
     }
 
     @Override
     public List<Review> findAllBySubscriptionBoxId(String subscriptionBoxId){
-        return (List<Review>) reviewRepository.findAllBySubscriptionId(subscriptionBoxId);
+        return reviewRepository.findAllBySubscriptionBoxId(subscriptionBoxId);
     }
 
     @Override
-    public Review findReviewById(String ReviewId){
-        return reviewRepository.findById(ReviewId);
+    public Optional<Review> findReviewById(String reviewId){
+        return reviewRepository.findById(reviewId);
     }
 
     @Override
     public Review updateReview(Review Review){
-        return reviewRepository.edit(Review);
+        return reviewRepository.save(Review);
     }
 
     @Override
-    public Review deleteReview(String ReviewId){
-        return reviewRepository.delete(ReviewId);
+    public void deleteReview(String ReviewId){
+        reviewRepository.deleteById(ReviewId);
     }
 
     @Override
-    public List<Review> findFilteredReviewByRating(String subcriptionBoxId, int raitng){
-        return reviewRepository.findAllFilteredReviewByRating(subcriptionBoxId, raitng);
+    public List<Review> findFilteredReviewByRating(int rating, String subscriptionBoxId){
+        return reviewRepository.findFilteredReviewByRating(rating, subscriptionBoxId);
     }
 }

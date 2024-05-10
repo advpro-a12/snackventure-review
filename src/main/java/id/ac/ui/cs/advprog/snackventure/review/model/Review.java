@@ -3,29 +3,46 @@ package id.ac.ui.cs.advprog.snackventure.review.model;
 import id.ac.ui.cs.advprog.snackventure.review.enums.ReviewStatus;
 import id.ac.ui.cs.advprog.snackventure.review.status.PendingState;
 import id.ac.ui.cs.advprog.snackventure.review.status.ReviewState;
+
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.Date;
 
-
 @Setter
 @Getter
-
+@Entity
+@Table(name = "review")
 public class Review {
+    @Id
     private String idReview;
+
+    @Column(name="created_date", updatable = false, nullable = false)
     private Date createdDate;
-    private String customerId;
+
+    @Column(name="user_id",nullable = false)
+    private String userId;
+
+    @Column(nullable = false)
     private String review;
+
+    @Column(nullable = false)
     private int rating;
+
+    @Column(name="subscription_box_id",nullable = false)
     private String subscriptionBoxId;
+
+    @Column(name="review_status", nullable = false)
     private ReviewStatus reviewStatus;
+
+    @Transient
     private ReviewState state;
 
 
-    public Review(String idReview, String customerId, String subscriptionBoxId, int rating,String review) {
+    public Review(String idReview, String userId, String subscriptionBoxId, int rating,String review) {
         this.idReview = idReview;
         this.createdDate= new Date();
-        this.customerId = customerId;
+        this.userId = userId;
         this.subscriptionBoxId = subscriptionBoxId;
         this.reviewStatus = ReviewStatus.PENDING;
         this.rating = rating;

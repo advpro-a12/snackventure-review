@@ -1,11 +1,10 @@
 package id.ac.ui.cs.advprog.snackventure.review.service;
 
+import id.ac.ui.cs.advprog.snackventure.review.model.Review;
+import id.ac.ui.cs.advprog.snackventure.review.repository.ReviewRepository;
+
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,8 +13,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import id.ac.ui.cs.advprog.snackventure.review.model.Review;
-import id.ac.ui.cs.advprog.snackventure.review.repository.ReviewRepository;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 
 @ExtendWith(MockitoExtension.class)
 public class ReviewServiceTest {
@@ -41,7 +42,7 @@ public class ReviewServiceTest {
 
     @Test
     void testCreateReview(){
-        when(reviewRepository.create(review)).thenReturn(review);
+        when(reviewRepository.save(review)).thenReturn(review);
         Review createReview = reviewService.createReview(review);
         assertNotNull(createReview);
         assertEquals(review.getIdReview(), createReview.getIdReview());
@@ -67,7 +68,7 @@ public class ReviewServiceTest {
 
     @Test
     void testFindReviewBySubscriptionBoxId(){
-        when(reviewRepository.findAllBySubscriptionId("99963276-4e60-4e9a-96ce-8d5a9957209d")).thenReturn(Arrays.asList(review));
+        when(reviewRepository.findAllBySubscriptionBoxId("99963276-4e60-4e9a-96ce-8d5a9957209d")).thenReturn(Arrays.asList(review));
         List<Review> reviews = reviewService.findAllBySubscriptionBoxId("99963276-4e60-4e9a-96ce-8d5a9957209d");
         assertTrue(reviews.size()!=0);
         assertEquals(reviews.size(), 1);
@@ -76,7 +77,7 @@ public class ReviewServiceTest {
 
     @Test
     void testEditReview(){
-        when(reviewRepository.edit(review)).thenReturn(review);
+        when(reviewRepository.save(review)).thenReturn(review);
         Review editedReview = reviewService.updateReview(review);
         assertNotNull(editedReview);
         assertEquals(review.getIdReview(),editedReview.getIdReview());
@@ -84,19 +85,25 @@ public class ReviewServiceTest {
 
     @Test
     void testDeleteReview(){
-        when(reviewRepository.delete("4ec1f12c-8e2b-4f02-85c0-531e762b483b")).thenReturn(review);
-        Review deletedReview = reviewService.deleteReview("4ec1f12c-8e2b-4f02-85c0-531e762b483b");
-        assertNotNull(deletedReview);
-        assertEquals(review.getIdReview(), deletedReview.getIdReview());
+        doNothing().when(reviewRepository).deleteById("4ec1f12c-8e2b-4f02-85c0-531e762b483b");
+        assertDoesNotThrow(() -> reviewService.deleteReview("4ec1f12c-8e2b-4f02-85c0-531e762b483b"));
+        verify(reviewRepository).deleteById("4ec1f12c-8e2b-4f02-85c0-531e762b483b");
+    }
+
+    @Test
+    void testFindByIdThrowsException() {
+        when(reviewRepository.findById("not-exist")).thenReturn(Optional.empty());
+        Optional<Review> result = reviewService.findReviewById("not-exist");
+        assertFalse(result.isPresent());
     }
 
     @Test
     void testFilterReviewByRating(){
-        when(reviewRepository.findAllFilteredReviewByRating("99963276-4e60-4e9a-96ce-8d5a9957209d", 4)).thenReturn(Arrays.asList(review));
-        List<Review> reviews = reviewService.findFilteredReviewByRating("99963276-4e60-4e9a-96ce-8d5a9957209d", 4);
+        when(reviewRepository.findFilteredReviewByRating(4, "99963276-4e60-4e9a-96ce-8d5a9957209d")).thenReturn(Arrays.asList(review));
+        List<Review> reviews = reviewService.findFilteredReviewByRating(4, "99963276-4e60-4e9a-96ce-8d5a9957209d");
         assertTrue(reviews.size()!=0);
         assertEquals(reviews.size(), 1);
         assertEquals(reviews.get(0).getIdReview(), review.getIdReview());
-    }
 
+    }
 }
