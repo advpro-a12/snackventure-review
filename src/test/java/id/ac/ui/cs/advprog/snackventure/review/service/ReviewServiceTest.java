@@ -158,18 +158,16 @@ public class ReviewServiceTest {
 
     @Test
     void testFilterReviewByRating(){
-        String userId = "07f9b8b0-7257-4434-a5b9-79c9703f0760";
-        String subscriptionBoxId1 = "99963276-4e60-4e9a-96ce-8d5a9957209d";
-        int rating1 = 4;
-        String reviewText1 = "Great snacks!";
-
-        Review review = new Review(userId, subscriptionBoxId1, rating1, reviewText1);
-
-        when(reviewRepository.findFilteredReviewByRating(4, "99963276-4e60-4e9a-96ce-8d5a9957209d")).thenReturn(Arrays.asList(review));
-        List<Review> reviews = reviewService.findFilteredReviewByRating(4, "99963276-4e60-4e9a-96ce-8d5a9957209d");
-        assertTrue(reviews.size()!=0);
-        assertEquals(reviews.size(), 1);
-        assertEquals(reviews.get(0).getIdReview(), review.getIdReview());
+        String subscriptionBoxId = "99963276-4e60-4e9a-96ce-8d5a9957209d";
+        Review review1 = new Review("07f9b8b0-7257-4434-a5b9-79c9703f0760", subscriptionBoxId, 4, "Great snacks!");
+        Review review2 = new Review("07f9b8b0-7257-4434-a5b9-79c9703f0760", subscriptionBoxId, 4, "Amazing snacks!");
+    
+        when(reviewRepository.findFilteredReviewByRating(4, subscriptionBoxId)).thenReturn(Arrays.asList(review1,review2));
+    
+        List<Review> filteredReviews = reviewService.findFilteredReviewByRating(4, subscriptionBoxId);
+    
+        assertEquals(2, filteredReviews.size());
+        assertEquals(4, filteredReviews.get(0).getRating());
     }
     
     @Test
@@ -178,7 +176,7 @@ public class ReviewServiceTest {
         UUID id = UUID.randomUUID();
         review.setIdReview(id.toString());
 
-        when(reviewService.findReviewById(id.toString())).thenReturn(Optional.of(review));
+        when(reviewRepository.findById(id.toString())).thenReturn(Optional.of(review));
 
         Review updatedReview = reviewService.updateReviewStatus(id.toString(), ReviewStatus.APPROVED.toString());
 
@@ -193,7 +191,7 @@ public class ReviewServiceTest {
         UUID id = UUID.randomUUID();
         review.setIdReview(id.toString());
 
-        when(reviewService.findReviewById(id.toString())).thenReturn(Optional.of(review));
+        when(reviewRepository.findById(id.toString())).thenReturn(Optional.of(review));
 
         Review updatedReview = reviewService.updateReviewStatus(id.toString(), ReviewStatus.REJECTED.toString());
 
