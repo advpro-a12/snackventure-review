@@ -51,8 +51,8 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<Review> findFilteredReviewByRating(int rating, String subscriptionBoxId){
-        return reviewRepository.findFilteredReviewByRating(rating, subscriptionBoxId);
+    public List<Review> findAllByRatingAndSubscriptionBoxId(int rating, String subscriptionBoxId){
+        return reviewRepository.findAllByRatingAndSubscriptionBoxId(rating, subscriptionBoxId);
     }
 
     @Override
