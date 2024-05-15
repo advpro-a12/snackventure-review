@@ -165,7 +165,7 @@ public class ReviewServiceTest {
         when(reviewRepository.findFilteredReviewByRating(4, subscriptionBoxId)).thenReturn(Arrays.asList(review1,review2));
     
         List<Review> filteredReviews = reviewService.findFilteredReviewByRating(4, subscriptionBoxId);
-    
+        
         assertEquals(2, filteredReviews.size());
         assertEquals(4, filteredReviews.get(0).getRating());
     }
