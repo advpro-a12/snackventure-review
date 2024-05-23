@@ -34,6 +34,7 @@ jobs:
       - name: Build with Gradle
         run: |
           ./gradlew assemble
+          
       # (Optional) Add steps for running tests and generating reports
 
       - name: Upload Artifact
@@ -71,7 +72,6 @@ jobs:
           ./gradlew check --info --stacktrace
           ./gradlew test
           ./gradlew jacocoTestReport
-      # (Optional) Add steps for generating coverage report and other post-test tasks
 
   publish:
     name: Publish Docker Image
