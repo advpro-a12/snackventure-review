@@ -3,6 +3,7 @@ import id.ac.ui.cs.advprog.snackventure.review.model.Review;
 import id.ac.ui.cs.advprog.snackventure.review.service.ReviewService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -31,6 +32,7 @@ public class ReviewController {
     private ReviewService reviewService;
 
     @Async
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CUSTOMER')")
     @PostMapping("/{id}/create-review")
     public CompletableFuture<ResponseEntity<Review>> createReview(@PathVariable String id, @RequestBody Map<String, Object> requestBody){
         String idUser = requestBody.get("customerId").toString();
@@ -42,6 +44,7 @@ public class ReviewController {
     }
 
     @Async
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/reviews")
     public CompletableFuture<ResponseEntity<List<Review>>> getAllReview() {
         List<Review> review = reviewService.findAllReviews();
@@ -49,6 +52,7 @@ public class ReviewController {
     }
 
     @Async
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{id}")
     public CompletableFuture<ResponseEntity<Review>> getReviewById(@PathVariable String id){
         Optional<Review> optionalReview = reviewService.findReviewById(id);
@@ -61,6 +65,7 @@ public class ReviewController {
     }
 
     @Async
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("user/{id}")
     public CompletableFuture<ResponseEntity<List<Review>>> getReviewByUserId(@PathVariable String id){
         List<Review> reviews = reviewService.findAllByUserId(id);
@@ -68,6 +73,7 @@ public class ReviewController {
     }
 
     @Async
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("subscription-box/{id}")
     public CompletableFuture<ResponseEntity<List<Review>>> getReviewBySubscriptionBoxId(@PathVariable String id){
         List<Review> reviews = reviewService.findAllBySubscriptionBoxId(id);
@@ -75,6 +81,7 @@ public class ReviewController {
     }
 
     @Async
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PatchMapping("/{id}/change-status")
     public CompletableFuture<ResponseEntity<Review>> updateApprovalStatus(@PathVariable String id, @RequestBody Map<String, String> requestBody) {
         String status = requestBody.get("status");
@@ -84,6 +91,7 @@ public class ReviewController {
 
     
     @Async
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CUSTOMER')")
     @DeleteMapping("/{id}/delete-review")
     public CompletableFuture<ResponseEntity<Review>> deleteReview(@PathVariable String id){
         reviewService.deleteReview(id);
@@ -91,6 +99,7 @@ public class ReviewController {
     }
 
     @Async
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CUSTOMER')")
     @PatchMapping("/{id}/update-review")
     public CompletableFuture<ResponseEntity<Review>> updateReview(@PathVariable String id, @RequestBody Map<String, String> requestBody) {
         Optional<Review> optionalReview = reviewService.findReviewById(id);
@@ -107,6 +116,7 @@ public class ReviewController {
     }
     
     @Async
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/subscription-box/{id}/filter")
     public CompletableFuture<ResponseEntity<List<Review>>> filterReviewsBySubscriptionBoxIdAndRating(@PathVariable("id") String id, @RequestBody Map<String,String> requestBody) {
         List<Review> reviews = reviewService.findAllByRatingAndSubscriptionBoxId(Integer.parseInt(requestBody.get("rating")), id);
