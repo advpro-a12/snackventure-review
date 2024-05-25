@@ -76,7 +76,23 @@ public class ReviewTest {
         assertInstanceOf(RejectedState.class, review.getState());
     }
 
-    
+    @Test
+    public void testReviewStatusApproveThenApprove(){
+        review.approve();
+        review.approve();
+        assertEquals(ReviewStatus.APPROVED, review.getReviewStatus());
+        assertInstanceOf(ApprovedState.class, review.getState());
+    }
+
+    @Test
+    public void testReivewStatusRejectThenReject(){
+        review.reject();
+        review.reject();
+        assertEquals(ReviewStatus.REJECTED, review.getReviewStatus());
+        assertInstanceOf(RejectedState.class, review.getState());
+    }
+
+
     @Test
     public void testPostLoadWithApprovedState() {
         review.setStateString("APPROVED");
