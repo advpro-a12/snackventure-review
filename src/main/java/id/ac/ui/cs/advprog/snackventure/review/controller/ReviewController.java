@@ -1,12 +1,16 @@
 package id.ac.ui.cs.advprog.snackventure.review.controller;
-import id.ac.ui.cs.advprog.snackventure.review.model.Review;
-import id.ac.ui.cs.advprog.snackventure.review.service.ReviewService;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -15,12 +19,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.concurrent.CompletableFuture;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import id.ac.ui.cs.advprog.snackventure.review.model.Review;
+import id.ac.ui.cs.advprog.snackventure.review.service.ReviewService;
 
 
 @RestController
@@ -44,7 +45,7 @@ public class ReviewController {
     }
 
     @Async
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CUSTOMER')")
     @GetMapping("/reviews")
     public CompletableFuture<ResponseEntity<List<Review>>> getAllReview() {
         List<Review> review = reviewService.findAllReviews();
@@ -52,7 +53,7 @@ public class ReviewController {
     }
 
     @Async
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CUSTOMER')")
     @GetMapping("/{id}")
     public CompletableFuture<ResponseEntity<Review>> getReviewById(@PathVariable String id){
         Optional<Review> optionalReview = reviewService.findReviewById(id);
@@ -65,7 +66,7 @@ public class ReviewController {
     }
 
     @Async
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CUSTOMER')")
     @GetMapping("user/{id}")
     public CompletableFuture<ResponseEntity<List<Review>>> getReviewByUserId(@PathVariable String id){
         List<Review> reviews = reviewService.findAllByUserId(id);
@@ -73,7 +74,7 @@ public class ReviewController {
     }
 
     @Async
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CUSTOMER')")
     @GetMapping("subscription-box/{id}")
     public CompletableFuture<ResponseEntity<List<Review>>> getReviewBySubscriptionBoxId(@PathVariable String id){
         List<Review> reviews = reviewService.findAllBySubscriptionBoxId(id);
@@ -116,7 +117,7 @@ public class ReviewController {
     }
     
     @Async
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CUSTOMER')")
     @GetMapping("/subscription-box/{id}/filter")
     public CompletableFuture<ResponseEntity<List<Review>>> filterReviewsBySubscriptionBoxIdAndRating(@PathVariable("id") String id, @RequestBody Map<String,String> requestBody) {
         List<Review> reviews = reviewService.findAllByRatingAndSubscriptionBoxId(Integer.parseInt(requestBody.get("rating")), id);
