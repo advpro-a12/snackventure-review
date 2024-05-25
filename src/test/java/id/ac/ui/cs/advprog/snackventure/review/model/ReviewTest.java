@@ -124,4 +124,19 @@ public class ReviewTest {
         assertEquals("UNKNOWN", review.getStateString());
         assertInstanceOf(PendingState.class, review.getState());
     }
+
+    @Test
+    public void testPendingValue() {
+        assertEquals("PENDING", ReviewStatus.PENDING.getValue());
+    }
+
+    @Test
+    public void testApprovedValue() {
+        assertEquals("APPROVED", ReviewStatus.APPROVED.getValue());
+    }
+
+    @Test
+    public void testRejectedValue() {
+        assertEquals("REJECTED", ReviewStatus.REJECTED.getValue());
+    }
 }   
