@@ -26,6 +26,7 @@ import id.ac.ui.cs.advprog.snackventure.review.service.ReviewService;
 
 @RestController
 @EnableAsync
+@CrossOrigin
 @RequestMapping("/review")
 public class ReviewController {
 
