@@ -25,7 +25,6 @@ public class JWTService {
         return claims.getSubject();
     }
 
-    @SuppressWarnings("unchecked")
     public List<String> getRolesFromJWT(String token){
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getSignInKey())
