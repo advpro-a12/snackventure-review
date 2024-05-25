@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import id.ac.ui.cs.advprog.snackventure.review.enums.ReviewStatus;
 import id.ac.ui.cs.advprog.snackventure.review.status.ApprovedState;
+import id.ac.ui.cs.advprog.snackventure.review.status.PendingState;
 import id.ac.ui.cs.advprog.snackventure.review.status.RejectedState;
 
 
@@ -66,6 +67,34 @@ public class ReviewTest {
         review.approve();
         assertEquals(ReviewStatus.REJECTED, review.getReviewStatus());
         assertInstanceOf(RejectedState.class, review.getState());
+    }
+
+    @Test
+    public void testPostLoadWithApprovedState() {
+        review.setStateString("APPROVED");
+        review.postLoad();
+        assertInstanceOf(ApprovedState.class, review.getState());
+    }
+
+    @Test
+    public void testPostLoadWithRejectedState() {
+        review.setStateString("REJECTED");
+        review.postLoad();
+        assertInstanceOf(RejectedState.class, review.getState());
+    }
+
+    @Test
+    public void testPostLoadWithPendingState() {
+        review.setStateString("PENDING");
+        review.postLoad();
+        assertInstanceOf(PendingState.class, review.getState());
+    }
+
+    @Test
+    public void testPostLoadWithUnknownState() {
+        review.setStateString("UNKNOWN");
+        review.postLoad();
+        assertInstanceOf(PendingState.class, review.getState());
     }
 
 }   
