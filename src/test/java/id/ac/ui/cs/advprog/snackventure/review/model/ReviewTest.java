@@ -38,6 +38,13 @@ public class ReviewTest {
         assertEquals(4, review.getRating());
         assertEquals("Great snacks!", review.getReview());
     }
+
+    @Test
+    public void testSetUserId() {
+        String newUserId = "123e4567-e89b-12d3-a456-426614174000";
+        review.setUserId(newUserId);
+        assertEquals(newUserId, review.getUserId());
+    }
     
     @Test
     public void testReviewStatusApprove() {
@@ -69,10 +76,12 @@ public class ReviewTest {
         assertInstanceOf(RejectedState.class, review.getState());
     }
 
+    
     @Test
     public void testPostLoadWithApprovedState() {
         review.setStateString("APPROVED");
         review.postLoad();
+        assertEquals("APPROVED", review.getStateString());
         assertInstanceOf(ApprovedState.class, review.getState());
     }
 
@@ -80,6 +89,7 @@ public class ReviewTest {
     public void testPostLoadWithRejectedState() {
         review.setStateString("REJECTED");
         review.postLoad();
+        assertEquals("REJECTED", review.getStateString());
         assertInstanceOf(RejectedState.class, review.getState());
     }
 
@@ -87,6 +97,7 @@ public class ReviewTest {
     public void testPostLoadWithPendingState() {
         review.setStateString("PENDING");
         review.postLoad();
+        assertEquals("PENDING", review.getStateString());
         assertInstanceOf(PendingState.class, review.getState());
     }
 
@@ -94,7 +105,7 @@ public class ReviewTest {
     public void testPostLoadWithUnknownState() {
         review.setStateString("UNKNOWN");
         review.postLoad();
+        assertEquals("UNKNOWN", review.getStateString());
         assertInstanceOf(PendingState.class, review.getState());
     }
-
 }   
