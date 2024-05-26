@@ -263,4 +263,37 @@ public class ReviewControllerTest {
         mvcResult.getAsyncResult();
         assertEquals(200, mvcResult.getResponse().getStatus());
     }
+
+     @Test
+    public void testGetReviewByIdNotFound() throws Exception {
+        String reviewId = "review1";
+
+        when(reviewService.findReviewById(reviewId)).thenReturn(Optional.empty());
+
+        MvcResult mvcResult = mockMvc.perform(get("/review/" + reviewId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        mvcResult.getAsyncResult();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+    }
+
+    @Test
+    public void testUpdateReviewNotFound() throws Exception {
+        String reviewId = "review1";
+
+        when(reviewService.findReviewById(reviewId)).thenReturn(Optional.empty());
+
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("review", "Updated review text");
+        requestBody.put("rating", "5");
+
+        MvcResult mvcResult = mockMvc.perform(patch("/review/" + reviewId + "/update-review")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(requestBody)))
+                .andReturn();
+
+        mvcResult.getAsyncResult();
+        assertEquals(200, mvcResult.getResponse().getStatus());
+    }
 }

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -198,6 +199,38 @@ public class ReviewServiceTest {
         verify(reviewRepository, times(1)).findById(id.toString());
         verify(reviewRepository, times(1)).save(review);
         assertEquals(ReviewStatus.REJECTED, updatedReview.getReviewStatus());
+    }
+
+    @Test
+    public void testUpdateReviewStatusInvalidStatus() {
+        Review review = new Review();
+        UUID id = UUID.randomUUID();
+        review.setIdReview(id.toString());
+
+        when(reviewRepository.findById(id.toString())).thenReturn(Optional.of(review));
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            reviewService.updateReviewStatus(id.toString(), "INVALID_STATUS");
+        });
+
+        verify(reviewRepository, times(1)).findById(id.toString());
+        verify(reviewRepository, times(0)).save(review); // Pastikan metode save tidak dipanggil
+        assertEquals("Invalid status", exception.getMessage());
+    }
+
+    @Test
+    public void testUpdateReviewStatusReviewNotFound() {
+        UUID id = UUID.randomUUID();
+
+        when(reviewRepository.findById(id.toString())).thenReturn(Optional.empty());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            reviewService.updateReviewStatus(id.toString(), ReviewStatus.APPROVED.toString());
+        });
+
+        verify(reviewRepository, times(1)).findById(id.toString());
+        verify(reviewRepository, times(0)).save(new Review()); // Pastikan metode save tidak dipanggil
+        assertEquals("Review not found with ID: " + id.toString(), exception.getMessage());
     }
 
 }
